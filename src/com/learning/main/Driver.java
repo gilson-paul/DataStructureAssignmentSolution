@@ -1,86 +1,77 @@
 package com.learning.main;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+class Node
+{
+	int val;
+	Node left, right;
+	
+	Node(int item)
+	{
+		val = item;
+		left = right = null;
+	}
+}
+
+class SkewedTree
+{
+	public Node node;
+	public Node prevNode = null;
+	public Node headNode = null;
+	void flattenBTToSkewed(Node root)
+	{
+	
+		// Base Case
+		if(root == null)
+		{
+			return;
+		}
+	
+		
+			flattenBTToSkewed(root.left);
+		
+		Node rightNode = root.right;
+		Node leftNode = root.left;
+	
+		if(headNode == null)
+		{
+			headNode = root;
+			root.left = null;
+			prevNode = root;
+		}
+		else
+		{
+			prevNode.right = root;
+			root.left = null;
+			prevNode = root;
+		}
+	
+		
+			flattenBTToSkewed(rightNode);
+		
+	}
+	void traverseRightSkewed(Node root)
+	{
+		if(root == null)
+		{
+			return;
+		}
+		System.out.print(root.val + " ");
+		traverseRightSkewed(root.right);	
+	}
+}
 
 public class Driver {
-
 	
-	
-	
-	
-		public static void main(String[] args) {
-			//int[] floors= {4,5,3,10,7,1,2};
-			
-			Scanner sc = new Scanner(System.in);
-			System.out.println("enter the total no of floors in the building");
-			int	noOfFloors = sc.nextInt(); 
-			int[] floors= new int[noOfFloors];
-			
-			for(int i=0;i<noOfFloors;++i) {
-				System.out.println("enter the floor size given on day :" +(i+1));
-				floors[i] = sc.nextInt();
-			}
-			
-			
-			
-			
-			
-			
-			
-			PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
-			List<Integer> sortedFloors= new ArrayList<>();
-			int max=0;
-			for(int i=0;i<floors.length;++i) {
-				sortedFloors.add(floors[i]);
-				if(floors[i]>max)
-					max=floors[i];
-			}
-			Collections.sort(sortedFloors);
-			
-			System.out.println();
-			
-			int currentFloor=0;
-			
-			System.out.println("The order of construction is as follows");
-			for(int i=0;i<floors.length;++i) {
-				System.out.println("Day: "+(i+1));
-				
-				if(max==floors[i]) {
-					if(i==0) {
-						System.out.println(floors[i]);
-						currentFloor=floors[i];
-					}
-					else {
-						System.out.print(floors[i]+" ");
-						currentFloor=displayFromQueue(pq, sortedFloors, floors[i]);
-						System.out.println();
-					}
-				}else if(floors[i]==getNextElement(currentFloor,sortedFloors)) {
-					System.out.print(floors[i]+" ");
-					currentFloor=displayFromQueue(pq, sortedFloors, floors[i]);
-					System.out.println();
-				}else {
-					System.out.println();
-					pq.add(floors[i]);
-				}
-			}
+		public static void main (String[] args)
+		{
+			SkewedTree tree = new SkewedTree();
+			tree.node = new Node(50);
+			tree.node.left = new Node(30);
+			tree.node.right = new Node(60);
+			tree.node.left.left = new Node(10);
+			tree.node.right.left= new Node(40);
+			tree.flattenBTToSkewed(tree.node);
+			tree.traverseRightSkewed(tree.headNode);
 		}
-		private static int getNextElement(int currentFloor, List<Integer> sortedFloors) {
-			if(currentFloor==0)
-				return -1;
-			int nextElement=sortedFloors.indexOf(currentFloor)-1;
-			return sortedFloors.get(nextElement);
-		}
-		private static int displayFromQueue(PriorityQueue<Integer> pq,List<Integer> sortedFloors, int floor) {
-			while(1<=pq.size() && (pq.peek()==getNextElement(floor,sortedFloors))) {
-				floor=(int) pq.peek();
-				System.out.print(pq.poll()+" ");
-			}
-			return floor;
-		}
-
-	
-}//
+		
+		
+	}
